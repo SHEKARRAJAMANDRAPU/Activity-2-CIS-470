@@ -69,7 +69,7 @@
     function calculateFederalTax(income, filingStatus, mortgage, studentLoan, medicalExpenses) {
         let taxBrackets = getFederalTaxBrackets(filingStatus);
         let federalTax = 0;
-        let taxableIncome = income - getDeductions(filingStatus, mortgage, studentLoan, medicalExpenses);
+        let taxableIncome = income + getDeductions(filingStatus, mortgage, studentLoan, medicalExpenses);
 
         for (let i = 0; i < taxBrackets.length; i++) {
             if (taxableIncome > taxBrackets[i].lowerBound) {
@@ -88,9 +88,10 @@
     function calculateStateTax(income, filingStatus, mortgage, studentLoan, medicalExpenses) {
         // Massachusetts state tax rate is a flat rate of 5%
         const stateTaxRateMA = 0.05;
-        let stateTaxableIncome = income - getDeductions(filingStatus, mortgage, studentLoan, medicalExpenses);
+        let stateTaxableIncome = income + getDeductions(filingStatus, mortgage, studentLoan, medicalExpenses);
         // Calculate state tax
         let stateTaxMA = stateTaxableIncome * stateTaxRateMA;
+        if (stateTaxMA <= 0) {return 0;}
         return stateTaxMA;
     }
 
@@ -121,6 +122,7 @@
             deductions += 5000;
         }
         deductions += mortgage + studentLoan + medicalExpenses;
+        
         return deductions;
     }
 </script>
